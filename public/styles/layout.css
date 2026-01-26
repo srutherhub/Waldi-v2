@@ -1,7 +1,34 @@
-.horizontal {
-  display: inline-flex;
+.hstack {
+  display: flex;
+  flex-direction: row;
 }
 
-.gap-0-5 {
-  gap: 0.5rem
+.vstack {
+  display: flex;
+  flex-direction: column;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.w100 {
+  width: 100%;
+}
+.container-s {
+  width: min(95%, 64rem);
+  margin: 0 auto;
+  padding:0.5rem;
+}
+
+.gap05 {
+  gap: 0.5rem;
+}
+
+.gap1 {
+  gap: 1rem;
 }

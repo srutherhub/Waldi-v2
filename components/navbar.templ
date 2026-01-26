@@ -1,8 +1,18 @@
 package components
 
 templ Navbar() {
-  <nav class="horizontal gap-0-5">
-    <h1>Waldi</h1>
-    <p>About</p>
-  </nav>
+<nav class="hstack gap05 align-center justify-between w100">
+  <div>
+    @Link("",WaldiLogo())
+    <a href=""></a>
+  </div>
+  <div class="hstack gap1">
+    @Link("",StringToComponent("About"))
+    @Link("",StringToComponent("Settings"))
+  </div>
+</nav>
+}
+
+templ WaldiLogo() {
+  <h1>Waldi</h1>
 }

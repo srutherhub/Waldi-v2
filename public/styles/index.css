@@ -1,7 +1,13 @@
 @import url("./layout.css");
+@import url("./interactable.css");
 
 html {
-  background-color: blanchedalmond;
+  background-color: #3b3b3b;
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 0.875rem;
+  font-size: 1rem;
+}
+
+h1,h2,h3,h4,h5,h6,p {
+  margin:0;
+  padding:0;
 }
