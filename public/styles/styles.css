@@ -1,0 +1,11 @@
+.b {
+  border: 1px var(--blue) solid;
+}
+
+.brad {
+  border-radius: 4px;
+}
+
+.bg {
+  background-color: var(--yellow);
+}

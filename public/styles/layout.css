@@ -22,7 +22,7 @@
 .container-s {
   width: min(95%, 64rem);
   margin: 0 auto;
-  padding:0.5rem;
+  padding:0.25rem;
 }
 
 .gap05 {
@@ -31,4 +31,12 @@
 
 .gap1 {
   gap: 1rem;
+}
+
+.pad05 {
+  padding: 0.5rem;
+}
+
+.pad025 {
+  padding: 0.25rem;
 }

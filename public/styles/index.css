@@ -1,10 +1,25 @@
 @import url("./layout.css");
 @import url("./interactable.css");
+@import url("./styles.css");
+
+:root {
+  --blue:#023373;
+  --darkblue:#011C40;
+  --khaki:#8C8977;
+  --yellow:#F2B705;
+  --white:#F2F2F2;
+}
 
 html {
-  background-color: #3b3b3b;
+  background-color:var(--whit);
   font-family: Helvetica, Arial, sans-serif;
   font-size: 1rem;
+  color: var(--darkblue);
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
 }
 
 h1,h2,h3,h4,h5,h6,p {

@@ -1,7 +1,8 @@
 package components
 
 templ Navbar() {
-<nav class="hstack gap05 align-center justify-between w100">
+  <div class="bg">
+<nav class="container-s hstack gap05 align-center justify-between w100">
   <div>
     @Link("",WaldiLogo())
     <a href=""></a>
@@ -11,6 +12,7 @@ templ Navbar() {
     @Link("",StringToComponent("Settings"))
   </div>
 </nav>
+</div>
 }
 
 templ WaldiLogo() {
