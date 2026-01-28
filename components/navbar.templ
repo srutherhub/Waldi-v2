@@ -1,20 +1,24 @@
 package components
 
+import (
+  library "waldi-v2/components/library"
+)
+
 templ Navbar() {
-  <div class="bg">
-<nav class="container-s hstack gap05 align-center justify-between w100">
-  <div>
-    @Link("",WaldiLogo())
-    <a href=""></a>
-  </div>
-  <div class="hstack gap1">
-    @Link("",StringToComponent("About"))
-    @Link("",StringToComponent("Settings"))
-  </div>
-</nav>
+<div class="bg2">
+  <nav class="container-s hstack gap05 align-center justify-between w100">
+    <div>
+      @library.Link("",WaldiLogo())
+      <a href=""></a>
+    </div>
+    <div class="hstack gap1">
+      @library.Link("",StringToComponent("About"))
+      @library.Link("",StringToComponent("Settings"))
+    </div>
+  </nav>
 </div>
 }
 
 templ WaldiLogo() {
-  <h1>Waldi</h1>
+<h1>Waldi</h1>
 }

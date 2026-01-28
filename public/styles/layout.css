@@ -16,6 +16,18 @@
   align-items: center;
 }
 
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.inlineblock {
+  display: inline-block;
+}
+
 .w100 {
   width: 100%;
 }
@@ -39,4 +51,8 @@
 
 .pad025 {
   padding: 0.25rem;
+}
+
+.front {
+  z-index: 1;
 }

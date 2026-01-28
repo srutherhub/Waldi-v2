@@ -3,8 +3,10 @@ package components
 import "waldi-v2/components"
 
 templ Home() {
-  <div class="">
-    @components.Navbar()
-    <p>Home</p>
+<div class="">
+  @components.Navbar()
+  <div class="container-s">
+    @components.LocationForm("")
   </div>
+</div>
 }
