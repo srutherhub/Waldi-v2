@@ -8,12 +8,13 @@ import (
 
 func Init(mux *http.ServeMux) {
 	baseRoute := New()
-	baseRoute.setParentRoute("/")
-	baseRoute.registerRoute(Route{Method: "GET", Path: "", Handler: handlers.Homepage}, mux)
+	baseRoute.SetParentRoute("/")
+	baseRoute.RegisterRoute(Route{Method: "GET", Path: "", Handler: handlers.Homepage}, mux)
 
-	apiRoute := New()
-	apiRoute.setParentRoute("/api")
-	apiRoute.registerRoute(Route{Method: "POST", Path: "/submitlocation", Handler: handlers.SubmitLocation},mux)
+	apiFormRoute := New()
+	apiFormRoute.SetParentRoute("/api/form")
+	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/address", Handler: handlers.AddressForm}, mux)
+	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/browserlocation", Handler: handlers.BrowserLocation}, mux)
 }
 
 type Route struct {
@@ -23,19 +24,22 @@ type Route struct {
 }
 
 type Controller struct {
-	base   string
-	routes []Route
+	Base   string
+	Routes []Route
 }
 
 func New() *Controller {
 	return &Controller{}
 }
 
-func (c *Controller) setParentRoute(path string) {
-	c.base = path
+func (c *Controller) SetParentRoute(path string) {
+	c.Base = path
 }
 
-func (c *Controller) registerRoute(route Route, mux *http.ServeMux) {
-	mux.HandleFunc(c.base+route.Path, route.Handler)
-	fmt.Println("Registered: " + c.base+route.Path)
+func (c *Controller) RegisterRoute(route Route, mux *http.ServeMux) {
+	mux.HandleFunc(c.Base + route.Path, route.Handler)
+
+	c.Routes = append(c.Routes, route)
+
+	fmt.Println("Registered: " + c.Base + route.Path)
 }

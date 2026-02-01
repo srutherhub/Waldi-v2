@@ -31,23 +31,19 @@ func Home() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
 		templ_7745c5c3_Err = components.Navbar().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"container-s\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"vstack gap2\"><div class=\"vstack gap1 vpadl\"><div class=\"container-s\"><div class=\"vstack gap1 w50or100\"><h1>Discover How Walkable A Neighborhood Is</h1><p>Enter any address and instantly find out how many points of interest are within walking distance. From coffee shops to parks, libraries to restaurants—see what your neighborhood has to offer.</p><p>Walkability matters. It affects your quality of life, your health, and your community. Our tool makes it easy to assess just how pedestrian-friendly any location is by mapping out nearby points of interest within a convenient walking radius. Whether you're considering a move, exploring a new neighborhood, or simply curious about what's around you, get the data you need in seconds.</p></div></div></div><div class=\"bg3 vpadl\"><div class=\"container-s vstack\"><h2>See What's In Walking Distance</h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.LocationForm("").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.AddressForm("").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div></div><div><div class=\"vstack container-s vpadl gap1\"><h2>About</h2><div><h4>How walkability is calculated.</h4></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

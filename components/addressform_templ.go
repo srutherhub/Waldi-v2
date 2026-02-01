@@ -12,7 +12,7 @@ import (
 	library "waldi-v2/components/library"
 )
 
-func LocationForm(address string) templ.Component {
+func AddressForm(address string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -33,31 +33,15 @@ func LocationForm(address string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<form hx-post=\"api/submitlocation\" hx-target=\"this\" hx-swap=\"outerHTML\" class=\"hstack gap1\"><div class=\"w100 relative inlineblock\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<form hx-post=\"api/form/address\" hx-target=\"this\" hx-swap=\"outerHTML\" id=\"form-address\" class=\"hstack gap1\"><div class=\"w100 relative inlineblock\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = library.Input("text", "address", address, "Address").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = library.Input("text", "address", address, "Address", "inp.address").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"absolute front\" style=\"right: 5px; top: 50%; transform: translateY(-50%);\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = library.Button2("My Location", "").Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = library.Button("Search", "submit").Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"absolute front\" style=\"right: 5px; top: 50%; transform: translateY(-50%);\"><button class=\"button2\" id=\"btn-mylocation\" type=\"button\">My Location</button></div></div><button class=\"button\" id=\"btn-submitaddress\">Submit</button></form><script>\n  addButtonOnClick(\"btn-mylocation\", myLocationHandler)\n</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

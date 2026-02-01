@@ -31,10 +31,18 @@
 .w100 {
   width: 100%;
 }
+
+.w50 {
+  width: 50%;
+}
+
+.w50or100 {
+  width: 50%;
+}
+
 .container-s {
-  width: min(95%, 64rem);
+  width: min(95%, 48rem);
   margin: 0 auto;
-  padding:0.25rem;
 }
 
 .gap05 {
@@ -43,6 +51,10 @@
 
 .gap1 {
   gap: 1rem;
+}
+
+.gap2 {
+  gap: 2rem;
 }
 
 .pad05 {
@@ -55,4 +67,14 @@
 
 .front {
   z-index: 1;
+}
+
+.vpadl {
+  padding: 4rem 0 4rem 0;
+}
+
+@media (max-width: 30rem) {
+  .w50or100 {
+    width: 100%;
+  }
 }

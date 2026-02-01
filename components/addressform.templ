@@ -1,0 +1,21 @@
+package components
+
+import (
+library "waldi-v2/components/library"
+)
+
+templ AddressForm(address string) {
+<form hx-post="api/form/address" hx-target="this" hx-swap="outerHTML" id="form-address" class="hstack gap1">
+  <div class="w100 relative inlineblock">
+    @library.Input("text","address",address,"Address","inp.address")
+    <div class="absolute front" style="right: 5px; top: 50%; transform: translateY(-50%);">
+      <button class="button2" id="btn-mylocation" type="button">My
+        Location</button>
+    </div>
+  </div>
+  <button class="button" id="btn-submitaddress">Submit</button>
+</form>
+<script>
+  addButtonOnClick("btn-mylocation", myLocationHandler)
+</script>
+}
