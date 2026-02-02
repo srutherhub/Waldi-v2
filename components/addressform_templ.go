@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	icon "waldi-v2/components/icons"
 	library "waldi-v2/components/library"
 )
 
@@ -33,15 +34,31 @@ func AddressForm(address string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<form hx-post=\"api/form/address\" hx-target=\"this\" hx-swap=\"outerHTML\" id=\"form-address\" class=\"hstack gap1\"><div class=\"w100 relative inlineblock\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"vstack gap05\" id=\"form-address\"><form hx-post=\"api/form/address\" class=\"hstack gap1\" hx-indicator=\"#form-address-spinner\"><div class=\" hstack w100 gap05\"><button class=\"button2 wcontent\" id=\"btn-mylocation\" type=\"button\"><span class=\"vstack\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = library.Input("text", "address", address, "Address", "inp.address").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = icon.IconLocationDot().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"absolute front\" style=\"right: 5px; top: 50%; transform: translateY(-50%);\"><button class=\"button2\" id=\"btn-mylocation\" type=\"button\">My Location</button></div></div><button class=\"button\" id=\"btn-submitaddress\">Submit</button></form><script>\n  addButtonOnClick(\"btn-mylocation\", myLocationHandler)\n</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</span></button>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = library.Input("text", "address", address, "123 Main St, Madison, Wisconsin, 53702", "inp.address").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button class=\"button\" id=\"btn-submitaddress\" hx-indicator=\"#form-address-spinner\"><span class=\"vstack\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = icon.IconArrowRight().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</span></button></div></form></div><script>\n  addButtonOnClick(\"btn-mylocation\", myLocationHandler)\n</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

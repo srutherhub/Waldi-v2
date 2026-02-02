@@ -1,6 +1,7 @@
 @import url("./layout.css");
 @import url("./interactable.css");
 @import url("./styles.css");
+@import url("./animation.css");
 
 :root {
   --blue:#023373;

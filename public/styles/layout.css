@@ -12,8 +12,16 @@
   justify-content: space-between;
 }
 
+.align-end {
+  align-items: flex-end;
+}
+
 .align-center {
   align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
 }
 
 .relative {
@@ -34,6 +42,14 @@
 
 .w50 {
   width: 50%;
+}
+
+.inset {
+  inset: 0;
+}
+
+.wcontent {
+  width: fit-content;
 }
 
 .w50or100 {

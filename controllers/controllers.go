@@ -4,17 +4,27 @@ import (
 	"fmt"
 	"net/http"
 	"waldi-v2/handlers"
+	"waldi-v2/services"
 )
 
 func Init(mux *http.ServeMux) {
+	appleMapsService:=services.NewAppleMapsService()
+	addressService:=services.NewAddressService(appleMapsService)
+
 	baseRoute := New()
 	baseRoute.SetParentRoute("/")
 	baseRoute.RegisterRoute(Route{Method: "GET", Path: "", Handler: handlers.Homepage}, mux)
 
+	resultRoute := New()
+	resultRoute.SetParentRoute("/result")
+	resultRoute.RegisterRoute(Route{Method: "GET", Path: "", Handler: handlers.Resultpage(addressService)}, mux)
+			resultRoute.RegisterRoute(Route{Method: "GET", Path: "/", Handler: handlers.Resultpage(addressService)}, mux)
+	resultRoute.RegisterRoute(Route{Method: "GET", Path: "/{id}", Handler: handlers.Resultpage(addressService)}, mux)
+
 	apiFormRoute := New()
 	apiFormRoute.SetParentRoute("/api/form")
-	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/address", Handler: handlers.AddressForm}, mux)
-	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/browserlocation", Handler: handlers.BrowserLocation}, mux)
+	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/address", Handler: handlers.AddressForm(addressService)}, mux)
+	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/browserlocation", Handler: handlers.BrowserLocation(addressService)}, mux)
 }
 
 type Route struct {
@@ -37,7 +47,7 @@ func (c *Controller) SetParentRoute(path string) {
 }
 
 func (c *Controller) RegisterRoute(route Route, mux *http.ServeMux) {
-	mux.HandleFunc(c.Base + route.Path, route.Handler)
+	mux.HandleFunc(c.Base+route.Path, route.Handler)
 
 	c.Routes = append(c.Routes, route)
 

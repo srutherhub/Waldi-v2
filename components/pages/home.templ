@@ -1,6 +1,10 @@
 package components
 
-import "waldi-v2/components"
+import (
+"waldi-v2/components"
+icon "waldi-v2/components/icons"
+)
+
 
 templ Home() {
 @components.Navbar()
@@ -24,8 +28,13 @@ templ Home() {
     </div>
   </div>
   <div class="bg3 vpadl">
-    <div class="container-s vstack">
-      <h2>See What's In Walking Distance</h2>
+    <div class="container-s vstack gap1">
+      <div class="hstack justify-between">
+        <h2>See What's In Walking Distance</h2>
+        <div id="form-address-spinner" class="htmx-indicator">
+          @icon.IconSpinner()
+        </div>
+      </div>
       @components.AddressForm("")
     </div>
   </div>

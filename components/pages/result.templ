@@ -1,0 +1,20 @@
+package components
+
+import "waldi-v2/components"
+
+type ResultProps struct {
+ApiKey string
+Lat string
+Lon string
+Address string
+}
+
+templ Result(props ResultProps ) {
+<div>
+  @components.Navbar()
+  <div class="vstack container-s vpadl gap05">
+    <h2>{props.Address}</h2>
+    @components.Map(props.ApiKey,props.Lat,props.Lon)
+  </div>
+</div>
+}

@@ -8,12 +8,16 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"waldi-v2/components"
-	icon "waldi-v2/components/icons"
-)
+import "waldi-v2/components"
 
-func Home() templ.Component {
+type ResultProps struct {
+	ApiKey  string
+	Lat     string
+	Lon     string
+	Address string
+}
+
+func Result(props ResultProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -34,27 +38,36 @@ func Home() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = components.Navbar().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"vstack gap2\"><div class=\"vstack gap1 vpadl\"><div class=\"container-s\"><div class=\"vstack gap1 w50or100\"><h1>Discover How Walkable A Neighborhood Is</h1><p>Enter any address and instantly find out how many points of interest are within walking distance. From coffee shops to parks, libraries to restaurants—see what your neighborhood has to offer.</p><p>Walkability matters. It affects your quality of life, your health, and your community. Our tool makes it easy to assess just how pedestrian-friendly any location is by mapping out nearby points of interest within a convenient walking radius. Whether you're considering a move, exploring a new neighborhood, or simply curious about what's around you, get the data you need in seconds.</p></div></div></div><div class=\"bg3 vpadl\"><div class=\"container-s vstack gap1\"><div class=\"hstack justify-between\"><h2>See What's In Walking Distance</h2><div id=\"form-address-spinner\" class=\"htmx-indicator\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"vstack container-s vpadl gap05\"><h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = icon.IconSpinner().Render(ctx, templ_7745c5c3_Buffer)
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(props.Address)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/pages/result.templ`, Line: 16, Col: 22}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.AddressForm("").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Map(props.ApiKey, props.Lat, props.Lon).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div></div><div><div class=\"vstack container-s vpadl gap1\"><h2>About</h2><div><h4>How walkability is calculated.</h4></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

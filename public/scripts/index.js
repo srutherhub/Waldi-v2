@@ -32,3 +32,7 @@ async function myLocationHandler() {
     console.error("Error:", error);
   }
 }
+
+function HandleHideMapSpinner() {
+  document.getElementById("map-spinner").style.display="none"
+}

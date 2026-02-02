@@ -1,0 +1,17 @@
+package components
+
+import (
+icons "waldi-v2/components/icons"
+)
+
+templ Map(apiKey, lat, lon string) {
+<div class="relative">
+  <div id="map-spinner" class="absolute inset vstack justify-center align-center">
+    @icons.IconSpinner()
+  </div>
+  <iframe
+    onload="HandleHideMapSpinner()"
+    src="https://embed.apple-mapkit.com/v1/embed?center=0%2C0&cameraDistance=7868190.7448&token=eyJraWQiOiJYUlk0ODRZSEJSIiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiI2S0hGTTM1NDU3IiwiaWF0IjoxNzcwMDAyMjM4LCJleHAiOjE3NzA2MjM5OTl9.HZJQOQ6VdJpiiUwPOL-RbDHwvO-mg9vQfE6_jz3VjbdmPIn7PwteU4fATXOwqp4Nxc3RTbFrEwxr53TpvBJBLQ"
+    class="map" frameborder="0"></iframe>
+</div>
+}
