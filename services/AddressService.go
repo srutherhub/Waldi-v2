@@ -21,11 +21,11 @@ func NewAddressService(am *AppleMapsService) *AddressService {
 	return &AddressService{Am: am}
 }
 
-type ReverseGeocodeResponse struct {
-	Results []ReverseGeocodeResult `json:"results"`
+type GeocodeResponse struct {
+	Results []GeocodeResult `json:"results"`
 }
 
-type ReverseGeocodeResult struct {
+type GeocodeResult struct {
 	Coordinate            Coordinate        `json:"coordinate"`
 	DisplayMapRegion      MapRegion         `json:"displayMapRegion"`
 	Name                  string            `json:"name"`
@@ -113,7 +113,7 @@ func (a *AddressService) GetAddressFromCoords(lat, lon float64) (string, error) 
 		return "", fmt.Errorf("Reverse geocode failed: %s", body)
 	}
 
-	var result ReverseGeocodeResponse
+	var result GeocodeResponse
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return "", err
@@ -121,14 +121,55 @@ func (a *AddressService) GetAddressFromCoords(lat, lon float64) (string, error) 
 
 	var addressStr string
 
-	for _,val := range result.Results[0].FormattedAddressLines {
-		addressStr=addressStr+" "+strings.TrimSpace(val)
+	for _, val := range result.Results[0].FormattedAddressLines {
+		addressStr = addressStr + " " + strings.TrimSpace(val)
 	}
-	
+
 	return strings.TrimSpace(addressStr), nil
 }
 
 func (a *AddressService) GetCoordsFromAddress(address string) (lat float64, lon float64, err error) {
+	geoCodeUrl := os.Getenv("APPLE_GEOCODE_URL")
+	u, err := url.Parse(geoCodeUrl)
 
-	return 999, 999, nil
+	if err != nil {
+		return 0, 0, err
+	}
+
+	query := u.Query()
+	query.Set("q", address)
+	u.RawQuery = query.Encode()
+
+	token := a.Am.GetAmToken()
+
+	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	if resp.StatusCode != 200 {
+		body, _ := io.ReadAll(resp.Body)
+		return 0, 0, fmt.Errorf("Geocode failed: %s", body)
+	}
+
+	var result GeocodeResponse
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return result.Results[0].Coordinate.Latitude, result.Results[0].Coordinate.Longitude, nil
 }

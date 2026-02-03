@@ -4,14 +4,38 @@ import (
 icons "waldi-v2/components/icons"
 )
 
-templ Map(apiKey, lat, lon string) {
+templ Map(apiKey string, lat float64, lon float64 ) {
 <div class="relative">
-  <div id="map-spinner" class="absolute inset vstack justify-center align-center">
-    @icons.IconSpinner()
-  </div>
-  <iframe
-    onload="HandleHideMapSpinner()"
-    src="https://embed.apple-mapkit.com/v1/embed?center=0%2C0&cameraDistance=7868190.7448&token=eyJraWQiOiJYUlk0ODRZSEJSIiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiI2S0hGTTM1NDU3IiwiaWF0IjoxNzcwMDAyMjM4LCJleHAiOjE3NzA2MjM5OTl9.HZJQOQ6VdJpiiUwPOL-RbDHwvO-mg9vQfE6_jz3VjbdmPIn7PwteU4fATXOwqp4Nxc3RTbFrEwxr53TpvBJBLQ"
-    class="map" frameborder="0"></iframe>
+    <div id="map-spinner" class="absolute inset vstack justify-center align-center">
+        @icons.IconSpinner()
+    </div>
+    <div id="map" class="map"></div>
+    
+    <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
+    <script type="text/javascript">
+        mapkit.init({
+            authorizationCallback: function(done) {
+                done({{ apiKey }});
+            }
+        });
+
+        const container = document.getElementById("map");
+        const center = new mapkit.Coordinate({{lat}}, {{lon}});
+
+        const map = new mapkit.Map(container, {
+            center: center,
+            region: new mapkit.CoordinateRegion(
+                center,
+                new mapkit.CoordinateSpan(0.007, 0.007)
+            ),
+            pointOfInterestFilter: mapkit.PointOfInterestFilter.includingAllCategories
+        });
+
+        map.addEventListener("load", function() {
+            if (window.HandleHideMapSpinner) {
+                HandleHideMapSpinner();
+            }
+        });
+    </script>
 </div>
 }

@@ -12,7 +12,7 @@ import (
 	icons "waldi-v2/components/icons"
 )
 
-func Map(apiKey, lat, lon string) templ.Component {
+func Map(apiKey string, lat float64, lon float64) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -41,7 +41,43 @@ func Map(apiKey, lat, lon string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><iframe onload=\"HandleHideMapSpinner()\" src=\"https://embed.apple-mapkit.com/v1/embed?center=0%2C0&cameraDistance=7868190.7448&token=eyJraWQiOiJYUlk0ODRZSEJSIiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiI2S0hGTTM1NDU3IiwiaWF0IjoxNzcwMDAyMjM4LCJleHAiOjE3NzA2MjM5OTl9.HZJQOQ6VdJpiiUwPOL-RbDHwvO-mg9vQfE6_jz3VjbdmPIn7PwteU4fATXOwqp4Nxc3RTbFrEwxr53TpvBJBLQ\" class=\"map\" frameborder=\"0\"></iframe></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div id=\"map\" class=\"map\"></div><script src=\"https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js\"></script><script type=\"text/javascript\">\n        mapkit.init({\n            authorizationCallback: function(done) {\n                done(")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var2, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(apiKey)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/map.templ`, Line: 18, Col: 30}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, ");\n            }\n        });\n\n        const container = document.getElementById(\"map\");\n        const center = new mapkit.Coordinate(")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var3, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(lat)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/map.templ`, Line: 23, Col: 50}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, ", ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var4, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(lon)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/map.templ`, Line: 23, Col: 59}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, ");\n\n        const map = new mapkit.Map(container, {\n            center: center,\n            region: new mapkit.CoordinateRegion(\n                center,\n                new mapkit.CoordinateSpan(0.007, 0.007)\n            ),\n            pointOfInterestFilter: mapkit.PointOfInterestFilter.includingAllCategories\n        });\n\n        map.addEventListener(\"load\", function() {\n            if (window.HandleHideMapSpinner) {\n                HandleHideMapSpinner();\n            }\n        });\n    </script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
