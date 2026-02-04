@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"waldi-v2/controllers"
+	m "waldi-v2/handlers/middleware"
+	"waldi-v2/utils"
 
 	"github.com/joho/godotenv"
 )
@@ -15,6 +17,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	cssUtils := utils.NewCssUtils()
+	cssUtils.BuildCss()
 
 	mux := http.NewServeMux()
 	serveStaticFiles(mux)
@@ -29,5 +34,5 @@ func main() {
 
 func serveStaticFiles(mux *http.ServeMux) {
 	fs := http.FileServer(http.Dir("public"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	mux.Handle("/public/", http.StripPrefix("/public/", m.SetStaticCacheHeader(fs)))
 }

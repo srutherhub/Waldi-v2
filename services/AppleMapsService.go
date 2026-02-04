@@ -148,9 +148,8 @@ func (mc *AppleMapsClient) Search(lat, lon float64) {
 	lon2Str := strconv.FormatFloat(lon2, 'f', 8, 64)
 
 	query := u.Query()
-	query.Set("q", "poi")
+	query.Set("q", "Cafe")
 	query.Set("includePoiCategories", "Bakery,Beach,Cafe,FoodMarket,Hiking,Landmark,Library,Museum,NationalMonument,Park,Restaurant,Store")
-	//query.Set("searchLocation", latStr+","+lonStr)
 	query.Set("userLocation", latStr+","+lonStr)
 	query.Set("resultTypeFilter", "Poi")
 	query.Set("searchRegionPriority", "required")
