@@ -12,7 +12,7 @@ func Homepage(w http.ResponseWriter, r *http.Request) {
 	pages.Index(page).Render(r.Context(), w)
 }
 
-func Resultpage(a *services.AddressService) http.HandlerFunc {
+func Resultpage(a services.IAddressService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		mapKey := os.Getenv("APPLE_MAPKIT_KEY")
@@ -21,6 +21,8 @@ func Resultpage(a *services.AddressService) http.HandlerFunc {
 		lat, lon, _ := a.DecodeCoords(id)
 
 		address, _ := a.GetAddressFromCoords(lat, lon)
+
+		a.GetNearbyLocations(lat, lon)
 
 		props := pages.ResultProps{ApiKey: mapKey, Lat: lat, Lon: lon, Address: address}
 

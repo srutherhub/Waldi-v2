@@ -6,7 +6,9 @@ import (
 )
 
 func TestAddressService(t *testing.T) {
-	a := &services.AddressService{}
+	am := services.NewAppleMapsService()
+	amc :=services.NewAppleMapsClient(am)
+	a := services.NewAddressService(amc)
 
 	encoded := a.EncodeCoords(43.0, -89.0)
 
@@ -20,4 +22,15 @@ func TestAddressService(t *testing.T) {
 		t.Fatal("AddressService.DecodeCoords failed to decode encoded id: " + err.Error())
 	}
 
+}
+
+
+func TestAppleMapService(t *testing.T){
+	am := services.NewAppleMapsService()
+
+	token:=am.GenerateToken()
+
+	if token=="" {
+		t.Fatal("AppleMapsService.GenerateToken failed to generate token")
+	}
 }

@@ -22,7 +22,6 @@ func AddressForm(a *services.AddressService) http.HandlerFunc {
 
 		w.Header().Set("HX-Redirect", "/result/"+urlEncoded)
 		w.WriteHeader(http.StatusOK)
-		return
 	}
 }
 

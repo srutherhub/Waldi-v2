@@ -2,59 +2,29 @@ package services
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
-	"os"
-	"strconv"
-	"strings"
-	"time"
 )
 
+type IAddressService interface {
+	EncodeCoords(float64, float64) string
+	DecodeCoords(string) (float64, float64, error)
+	GetAddressFromCoords(float64, float64) (string, error)
+	GetCoordsFromAddress(string) (float64, float64, error)
+	GetNearbyLocations(float64,float64)
+}
+
+type IAddressClient interface {
+	Geocode(string) (float64, float64, error)
+	ReverseGeocode(float64, float64) (string, error)
+	Search(float64,float64)
+}
+
 type AddressService struct {
-	Am *AppleMapsService
+	Mc IAddressClient
 }
 
-func NewAddressService(am *AppleMapsService) *AddressService {
-	return &AddressService{Am: am}
-}
-
-type GeocodeResponse struct {
-	Results []GeocodeResult `json:"results"`
-}
-
-type GeocodeResult struct {
-	Coordinate            Coordinate        `json:"coordinate"`
-	DisplayMapRegion      MapRegion         `json:"displayMapRegion"`
-	Name                  string            `json:"name"`
-	FormattedAddressLines []string          `json:"formattedAddressLines"`
-	StructuredAddress     StructuredAddress `json:"structuredAddress"`
-	Country               string            `json:"country"`
-	CountryCode           string            `json:"countryCode"`
-}
-
-type Coordinate struct {
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-}
-
-type MapRegion struct {
-	SouthLatitude float64 `json:"southLatitude"`
-	WestLongitude float64 `json:"westLongitude"`
-	NorthLatitude float64 `json:"northLatitude"`
-	EastLongitude float64 `json:"eastLongitude"`
-}
-
-type StructuredAddress struct {
-	AdministrativeArea     string   `json:"administrativeArea"`
-	AdministrativeAreaCode string   `json:"administrativeAreaCode"`
-	Locality               string   `json:"locality"`
-	PostCode               string   `json:"postCode"`
-	Thoroughfare           string   `json:"thoroughfare"`
-	FullThoroughfare       string   `json:"fullThoroughfare"`
-	AreasOfInterest        []string `json:"areasOfInterest"`
+func NewAddressService(mc IAddressClient) *AddressService {
+	return &AddressService{Mc: mc}
 }
 
 func (a *AddressService) EncodeCoords(lat, lon float64) string {
@@ -79,97 +49,27 @@ func (a *AddressService) DecodeCoords(encoded string) (float64, float64, error) 
 }
 
 func (a *AddressService) GetAddressFromCoords(lat, lon float64) (string, error) {
-	reverseGeoCodeUrl := os.Getenv("APPLE_RGEOCODE_URL")
-	u, err := url.Parse(reverseGeoCodeUrl)
 
-	if err != nil {
-		return "", fmt.Errorf(err.Error())
-	}
+	address, err := a.Mc.ReverseGeocode(lat, lon)
 
-	latStr := strconv.FormatFloat(lat, 'f', 8, 64)
-	lonStr := strconv.FormatFloat(lon, 'f', 8, 64)
-
-	query := u.Query()
-	query.Set("loc", latStr+","+lonStr)
-	u.RawQuery = query.Encode()
-
-	token := a.Am.GetAmToken()
-
-	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
-	if err != nil {
-		return "", fmt.Errorf("Failed to get address")
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-
-	client := &http.Client{
-		Timeout: 5 * time.Second,
-	}
-
-	resp, err := client.Do(req)
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		body, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("Reverse geocode failed: %s", body)
-	}
-
-	var result GeocodeResponse
-	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return "", err
 	}
 
-	var addressStr string
-
-	for _, val := range result.Results[0].FormattedAddressLines {
-		addressStr = addressStr + " " + strings.TrimSpace(val)
-	}
-
-	return strings.TrimSpace(addressStr), nil
+	return address, nil
 }
 
 func (a *AddressService) GetCoordsFromAddress(address string) (lat float64, lon float64, err error) {
-	geoCodeUrl := os.Getenv("APPLE_GEOCODE_URL")
-	u, err := url.Parse(geoCodeUrl)
+
+	lat, lon, err = a.Mc.Geocode(address)
 
 	if err != nil {
 		return 0, 0, err
 	}
 
-	query := u.Query()
-	query.Set("q", address)
-	u.RawQuery = query.Encode()
+	return lat, lon, nil
+}
 
-	token := a.Am.GetAmToken()
-
-	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
-
-	if err != nil {
-		return 0, 0, err
-	}
-
-	req.Header.Set("Authorization", "Bearer "+token)
-
-	client := &http.Client{
-		Timeout: 5 * time.Second,
-	}
-
-	resp, err := client.Do(req)
-
-	if err != nil {
-		return 0, 0, err
-	}
-
-	if resp.StatusCode != 200 {
-		body, _ := io.ReadAll(resp.Body)
-		return 0, 0, fmt.Errorf("Geocode failed: %s", body)
-	}
-
-	var result GeocodeResponse
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		return 0, 0, err
-	}
-
-	return result.Results[0].Coordinate.Latitude, result.Results[0].Coordinate.Longitude, nil
+func (a *AddressService) GetNearbyLocations(lat, lon float64) {
+	a.Mc.Search(lat,lon)
 }

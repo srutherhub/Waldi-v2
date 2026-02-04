@@ -8,8 +8,9 @@ import (
 )
 
 func Init(mux *http.ServeMux) {
-	appleMapsService:=services.NewAppleMapsService()
-	addressService:=services.NewAddressService(appleMapsService)
+	appleMapsService := services.NewAppleMapsService()
+	appleMapsClient := services.NewAppleMapsClient(appleMapsService)
+	addressService := services.NewAddressService(appleMapsClient)
 
 	baseRoute := New()
 	baseRoute.SetParentRoute("/")
@@ -18,7 +19,7 @@ func Init(mux *http.ServeMux) {
 	resultRoute := New()
 	resultRoute.SetParentRoute("/result")
 	resultRoute.RegisterRoute(Route{Method: "GET", Path: "", Handler: handlers.Resultpage(addressService)}, mux)
-			resultRoute.RegisterRoute(Route{Method: "GET", Path: "/", Handler: handlers.Resultpage(addressService)}, mux)
+	resultRoute.RegisterRoute(Route{Method: "GET", Path: "/", Handler: handlers.Resultpage(addressService)}, mux)
 	resultRoute.RegisterRoute(Route{Method: "GET", Path: "/{id}", Handler: handlers.Resultpage(addressService)}, mux)
 
 	apiFormRoute := New()
