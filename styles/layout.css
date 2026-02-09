@@ -8,6 +8,10 @@
   flex-direction: column;
 }
 
+.grow {
+  flex-grow: 1;
+}
+
 .justify-between {
   justify-content: space-between;
 }
@@ -42,6 +46,10 @@
 
 .w50 {
   width: 50%;
+}
+
+.h100 {
+  height: 100%;
 }
 
 .inset {

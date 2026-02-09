@@ -179,7 +179,7 @@ func LocationsByCategory(val services.PlaceCategory, name string, locations []se
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/pages/result.templ`, Line: 62, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/pages/result.templ`, Line: 62, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -299,7 +299,7 @@ func EmbeddedMapModal() templ.Component {
 			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<dialog id=\"map-modal\" class=\"modal-container pad1\"><div class=\"vstack gap05\"><h2>Details</h2><div id=\"map-modal-content\" class=\"vstack gap05\"></div><form method=\"dialog\"><button class=\"button w100\">Close</button></form></div></dialog>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<dialog id=\"map-modal\" class=\"modal-container pad1\"><div class=\"vstack gap05 h100\"><h2>Details</h2><div class=\"vstack gap05 h100\"><div id=\"map-modal-content\" class=\"grow\"></div><form method=\"dialog\"><button class=\"button w100\">Close</button></form></div></div></dialog>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

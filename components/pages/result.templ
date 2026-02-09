@@ -58,9 +58,9 @@ templ LocationsByCategory(val services.PlaceCategory, name string,locations []se
     <h3>{name}</h3>
   </div>
   if (len(locations)==0) {
-    <div class="hstack justify-center">
-    <p >No {name}'s nearby</p>
-    </div>
+  <div class="hstack justify-center">
+    <p>No {name}'s nearby</p>
+  </div>
   }
   for _ , place := range locations {
   <div id={place.Id} class="map-place hstack justify-between hoverable brad pad025 align-center" data-name={place.Name}
@@ -75,13 +75,15 @@ templ LocationsByCategory(val services.PlaceCategory, name string,locations []se
 
 templ EmbeddedMapModal() {
 <dialog id="map-modal" class="modal-container pad1">
-  <div class="vstack gap05">
+  <div class="vstack gap05 h100">
     <h2>Details</h2>
-    <div id="map-modal-content" class="vstack gap05">
+    <div class="vstack gap05 h100">
+      <div id="map-modal-content" class="grow">
+      </div>
+      <form method="dialog">
+        <button class="button w100">Close</button>
+      </form>
     </div>
-    <form method="dialog">
-      <button class="button w100">Close</button>
-    </form>
   </div>
 </dialog>
 }
