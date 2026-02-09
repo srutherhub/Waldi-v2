@@ -22,9 +22,9 @@ func Resultpage(a services.IAddressService) http.HandlerFunc {
 
 		address, _ := a.GetAddressFromCoords(lat, lon)
 
-		a.GetNearbyLocations(lat, lon)
+		locations, _ := a.GetNearbyLocations(lat, lon)
 
-		props := pages.ResultProps{ApiKey: mapKey, Lat: lat, Lon: lon, Address: address}
+		props := pages.ResultProps{ApiKey: mapKey, Lat: lat, Lon: lon, Address: address, Locations: locations}
 
 		page := pages.Result(props)
 		pages.Index(page).Render(r.Context(), w)

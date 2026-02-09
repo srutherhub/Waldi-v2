@@ -1,20 +1,98 @@
 package components
 
-import "waldi-v2/components"
+import (
+"waldi-v2/components"
+i "waldi-v2/components/icons"
+"waldi-v2/services"
+)
 
 type ResultProps struct {
 ApiKey string
 Lat float64
 Lon float64
 Address string
+Locations []services.PointOfInterest
 }
 
-templ Result(props ResultProps ) {
+templ Result(props ResultProps) {
 <div>
   @components.Navbar()
-  <div class="vstack container-s vpadl gap05">
-    <h2>{props.Address}</h2>
-    @components.Map(props.ApiKey,props.Lat,props.Lon)
+  <div class="container-s vpadl bg2">
+    <div class="vstack gap2 pad1">
+      <div class="vstack gap05">
+        <h2>Map</h2>
+        @components.Map(props.ApiKey, props.Lat, props.Lon)
+
+        <aside>Results based on: { props.Address }</aside>
+      </div>
+      @EmbeddedMapModal()
+      <div class="vstack gap05">
+        <h2>Places</h2>
+        <div class="vstack gap1 b brad pad05">
+          @LocationsByCategory(services.PlaceCategoryCafe,"Cafes",getLocationsByCat(services.PlaceCategoryCafe,props.Locations))
+          @LocationsByCategory(services.PlaceCategoryRestaurant,"Restaurants",getLocationsByCat(services.PlaceCategoryRestaurant,props.Locations))
+          @LocationsByCategory(services.PlaceCategoryPark,"Parks",getLocationsByCat(services.PlaceCategoryPark,props.Locations))
+          @LocationsByCategory(services.PlaceCategoryGrocery,"Groceries and Stores",getLocationsByCat(services.PlaceCategoryGrocery,props.Locations))
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+<script>
+  addAnnotationstoMap()
+</script>
+}
+
+templ LocationsByCategory(val services.PlaceCategory, name string,locations []services.PointOfInterest) {
+<div class="vstack gap05">
+  <div class="hstack gap05 align-center">
+    if (val==services.PlaceCategoryCafe) {
+    @i.IconMug()
+    } else if (val==services.PlaceCategoryPark) {
+    @i.IconTree()
+    } else if (val==services.PlaceCategoryRestaurant) {
+    @i.IconUtensils()
+    } else if (val==services.PlaceCategoryGrocery) {
+    @i.IconShop()
+    }
+    <h3>{name}</h3>
+  </div>
+  if (len(locations)==0) {
+    <div class="hstack justify-center">
+    <p >No {name}'s nearby</p>
+    </div>
+  }
+  for _ , place := range locations {
+  <div id={place.Id} class="map-place hstack justify-between hoverable brad pad025 align-center" data-name={place.Name}
+    data-lat={place.Latitude} data-lon={place.Longitude} onclick="openPlaceDetails(event)">
+    <p>{
+      place.Name }</p>
+    <div>@i.IconArrowRight()</div>
+  </div>
+  }
+</div>
+}
+
+templ EmbeddedMapModal() {
+<dialog id="map-modal" class="modal-container pad1">
+  <div class="vstack gap05">
+    <h2>Details</h2>
+    <div id="map-modal-content" class="vstack gap05">
+    </div>
+    <form method="dialog">
+      <button class="button w100">Close</button>
+    </form>
+  </div>
+</dialog>
+}
+
+func getLocationsByCat(cat services.PlaceCategory,locations []services.PointOfInterest) []services.PointOfInterest {
+output:=[]services.PointOfInterest{}
+
+for _,place := range locations {
+if (place.Category == cat) {
+output = append(output, place)
+}
+}
+return output
 }

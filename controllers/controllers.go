@@ -26,6 +26,7 @@ func Init(mux *http.ServeMux) {
 	apiFormRoute.SetParentRoute("/api/form")
 	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/address", Handler: handlers.AddressForm(addressService)}, mux)
 	apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/browserlocation", Handler: handlers.BrowserLocation(addressService)}, mux)
+		apiFormRoute.RegisterRoute(Route{Method: "POST", Path: "/mapmodal", Handler: handlers.MapModal()}, mux)
 }
 
 type Route struct {

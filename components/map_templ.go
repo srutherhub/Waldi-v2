@@ -33,7 +33,7 @@ func Map(apiKey string, lat float64, lon float64) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative\"><div id=\"map-spinner\" class=\"absolute inset vstack justify-center align-center\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative\" style=\"width: 100%; height: 100%;\"><div id=\"map-spinner\" class=\"absolute inset vstack justify-center align-center\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -41,7 +41,7 @@ func Map(apiKey string, lat float64, lon float64) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div id=\"map\" class=\"map\"></div><script src=\"https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js\"></script><script type=\"text/javascript\">\n        mapkit.init({\n            authorizationCallback: function(done) {\n                done(")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div id=\"map\" class=\"map\"></div><script src=\"https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js\"></script><script type=\"text/javascript\">\n        mapkit.init({\n            authorizationCallback: function (done) {\n                done(")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -77,7 +77,7 @@ func Map(apiKey string, lat float64, lon float64) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, ");\n\n        const map = new mapkit.Map(container, {\n            center: center,\n            region: new mapkit.CoordinateRegion(\n                center,\n                new mapkit.CoordinateSpan(0.007, 0.007)\n            ),\n            pointOfInterestFilter: mapkit.PointOfInterestFilter.includingAllCategories\n        });\n\n        map.addEventListener(\"load\", function() {\n            if (window.HandleHideMapSpinner) {\n                HandleHideMapSpinner();\n            }\n        });\n    </script></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, ");\n\n        window.map = new mapkit.Map(container, {\n            center: center,\n            region: new mapkit.CoordinateRegion(\n                center,\n                new mapkit.CoordinateSpan(0.007, 0.007)\n            ),\n            pointOfInterestFilter: mapkit.PointOfInterestFilter.includingAllCategories\n        });\n\n        map.addEventListener(\"load\", function () {\n            if (window.HandleHideMapSpinner) {\n                HandleHideMapSpinner();\n            }\n        });\n        const anno = new mapkit.MarkerAnnotation(center, {\n            title: \"Selected location\",\n            color: \"#023373\",\n            size: { width: 32, height: 32 },\n        });\n        map.removeAnnotations(map.annotations);\n        map.addAnnotations([anno]);\n    </script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

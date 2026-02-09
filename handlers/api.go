@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 	"waldi-v2/components"
 	"waldi-v2/services"
@@ -36,5 +37,18 @@ func BrowserLocation(a *services.AddressService) http.HandlerFunc {
 		address, _ := a.GetAddressFromCoords(latfloat, lonfloat)
 
 		components.AddressForm(address).Render(r.Context(), w)
+	}
+}
+
+func MapModal() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		embeddedMapKey := os.Getenv("APPLE_MAPEMBEDDED_KEY")
+		id := r.FormValue("id")
+		lat := r.FormValue("lat")
+		lon := r.FormValue("lon")
+		latfloat, _ := strconv.ParseFloat(lat, 64)
+		lonfloat, _ := strconv.ParseFloat(lon, 64)
+
+		components.MapEmbedded(id, latfloat, lonfloat, embeddedMapKey).Render(r.Context(), w)
 	}
 }

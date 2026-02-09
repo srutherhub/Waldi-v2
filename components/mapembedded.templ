@@ -1,0 +1,23 @@
+package components
+
+import (
+"fmt"
+"net/url"
+)
+
+templ MapEmbedded(id string, lat float64, lon float64, token string) {
+<iframe src={ buildEmbedURL(id, lat, lon, token) } class="mapembedded">
+</iframe>
+}
+
+func buildEmbedURL(placeID string, lat float64, lon float64, token string) string {
+baseURL := "https://embed.apple-mapkit.com/v1/embed"
+
+params := url.Values{}
+params.Add("center", fmt.Sprintf("%.4f,%.4f", lat, lon))
+params.Add("cameraDistance", "221.6159")
+params.Add("annotations", fmt.Sprintf(`[{"place":"%s"}]`, placeID))
+params.Add("token", token)
+
+return baseURL + "?" + params.Encode()
+}

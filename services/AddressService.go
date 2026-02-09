@@ -10,18 +10,37 @@ type IAddressService interface {
 	DecodeCoords(string) (float64, float64, error)
 	GetAddressFromCoords(float64, float64) (string, error)
 	GetCoordsFromAddress(string) (float64, float64, error)
-	GetNearbyLocations(float64,float64)
+	GetNearbyLocations(float64, float64) ([]PointOfInterest, error)
 }
 
 type IAddressClient interface {
 	Geocode(string) (float64, float64, error)
 	ReverseGeocode(float64, float64) (string, error)
-	Search(float64,float64)
+	Search(float64, float64) ([]PointOfInterest, error)
 }
 
 type AddressService struct {
 	Mc IAddressClient
 }
+
+type PointOfInterest struct {
+	Id        string
+	IdType    string
+	Name      string
+	Category  PlaceCategory
+	Address   string
+	Longitude float64
+	Latitude  float64
+}
+
+type PlaceCategory int
+
+const (
+	PlaceCategoryCafe PlaceCategory = iota
+	PlaceCategoryRestaurant
+	PlaceCategoryPark
+	PlaceCategoryGrocery
+)
 
 func NewAddressService(mc IAddressClient) *AddressService {
 	return &AddressService{Mc: mc}
@@ -70,6 +89,11 @@ func (a *AddressService) GetCoordsFromAddress(address string) (lat float64, lon 
 	return lat, lon, nil
 }
 
-func (a *AddressService) GetNearbyLocations(lat, lon float64) {
-	a.Mc.Search(lat,lon)
+func (a *AddressService) GetNearbyLocations(lat, lon float64) ([]PointOfInterest, error) {
+	res, err := a.Mc.Search(lat, lon)
+	if err != nil {
+		return []PointOfInterest{}, nil
+	}
+
+	return res, nil
 }

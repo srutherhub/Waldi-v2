@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"crypto/x509"
 	"encoding/json"
@@ -15,13 +16,108 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/sync/errgroup"
 )
+
+type IAppleMapsService interface {
+	GenerateMapsToken() string
+	GenerateToken() string
+	GetAmToken() string
+	GetToken() string
+	IsValidToken() bool
+}
 
 type AppleMapsClient struct {
 	Ams               IAppleMapsService
 	geocodeUrl        string
 	reverseGeoCodeUrl string
 	searchUrl         string
+}
+
+type AppleMapsService struct {
+	Token    string
+	AmToken  string
+	AmExpiry int64
+	Header   TokenHeader
+	Payload  TokenPayload
+	tokenUrl string
+}
+
+type TokenHeader struct {
+	Alg string `json:"alg"`
+	Kid string `json:"kid"`
+	Typ string `json:"typ"`
+}
+
+type TokenPayload struct {
+	Iss string `json:"iss"`
+	Iat int64  `json:"iat"`
+	Exp int64  `json:"exp"`
+}
+
+type AppleTokenResponse struct {
+	AccessToken      string `json:"accessToken"`
+	ExpiresInSeconds int    `json:"expiresInSeconds"`
+}
+
+type GeocodeResponse struct {
+	Results []GeocodeResult `json:"results"`
+}
+
+type GeocodeResult struct {
+	Coordinate            Coordinate        `json:"coordinate"`
+	DisplayMapRegion      MapRegion         `json:"displayMapRegion"`
+	Name                  string            `json:"name"`
+	FormattedAddressLines []string          `json:"formattedAddressLines"`
+	StructuredAddress     StructuredAddress `json:"structuredAddress"`
+	Country               string            `json:"country"`
+	CountryCode           string            `json:"countryCode"`
+}
+
+type Coordinate struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+}
+
+type MapRegion struct {
+	SouthLatitude float64 `json:"southLatitude"`
+	WestLongitude float64 `json:"westLongitude"`
+	NorthLatitude float64 `json:"northLatitude"`
+	EastLongitude float64 `json:"eastLongitude"`
+}
+
+type StructuredAddress struct {
+	AdministrativeArea     string   `json:"administrativeArea"`
+	AdministrativeAreaCode string   `json:"administrativeAreaCode"`
+	Locality               string   `json:"locality"`
+	PostCode               string   `json:"postCode"`
+	Thoroughfare           string   `json:"thoroughfare"`
+	FullThoroughfare       string   `json:"fullThoroughfare"`
+	AreasOfInterest        []string `json:"areasOfInterest"`
+}
+
+type AppleMapsSearchResponse struct {
+	DisplayMapRegion Region   `json:"displayMapRegion"`
+	Results          []Result `json:"results"`
+}
+
+type Result struct {
+	ID                    string            `json:"id"`
+	Coordinate            Coordinate        `json:"coordinate"`
+	DisplayMapRegion      Region            `json:"displayMapRegion"`
+	Name                  string            `json:"name"`
+	FormattedAddressLines []string          `json:"formattedAddressLines"`
+	StructuredAddress     StructuredAddress `json:"structuredAddress"`
+	Country               string            `json:"country"`
+	CountryCode           string            `json:"countryCode"`
+	PoiCategory           string            `json:"poiCategory"`
+}
+
+type Region struct {
+	SouthLatitude float64 `json:"southLatitude"`
+	WestLongitude float64 `json:"westLongitude"`
+	NorthLatitude float64 `json:"northLatitude"`
+	EastLongitude float64 `json:"eastLongitude"`
 }
 
 func NewAppleMapsClient(ams IAppleMapsService) *AppleMapsClient {
@@ -124,23 +220,93 @@ func (mc *AppleMapsClient) Geocode(address string) (float64, float64, error) {
 		return 0, 0, err
 	}
 
+	if len(result.Results) == 0 {
+		return 0, 0, fmt.Errorf("Could not geocode location")
+	}
+
 	return result.Results[0].Coordinate.Latitude, result.Results[0].Coordinate.Longitude, nil
 }
 
-func (mc *AppleMapsClient) Search(lat, lon float64) {
+func (mc *AppleMapsClient) Search(lat, lon float64) ([]PointOfInterest, error) {
+	g, _ := errgroup.WithContext(context.Background())
+
+	categories := []string{"Cafe", "Restaurant", "Park", "FoodMarket"}
+
+	results := make(chan AppleMapsSearchResponse, len(categories))
+
+	for _, category := range categories {
+		g.Go(func() error {
+			res, err := mc.SearchByCategory(category, lat, lon)
+			if err != nil {
+				return err
+			}
+			results <- res
+			return nil
+		})
+	}
+
+	go func() {
+		g.Wait()
+		close(results)
+	}()
+
+	if err := g.Wait(); err != nil {
+		return []PointOfInterest{}, err
+	}
+
+	var aggregateResults AppleMapsSearchResponse
+	var output []PointOfInterest
+
+	for res := range results {
+		aggregateResults.DisplayMapRegion = res.DisplayMapRegion
+		aggregateResults.Results = append(aggregateResults.Results, res.Results...)
+	}
+
+	for _, loc := range aggregateResults.Results {
+		var data PointOfInterest
+		data.Id = loc.ID
+		data.Name = loc.Name
+		data.Latitude = loc.Coordinate.Latitude
+		data.Longitude = loc.Coordinate.Longitude
+
+		switch loc.PoiCategory {
+		case "Cafe":
+			data.Category = PlaceCategoryCafe
+		case "Park":
+			data.Category = PlaceCategoryPark
+		case "FoodMarket":
+			data.Category = PlaceCategoryGrocery
+		case "Restaurant":
+			data.Category = PlaceCategoryRestaurant
+		default:
+			data.Category = PlaceCategoryGrocery
+		}
+
+		var address string
+		for _, str := range loc.FormattedAddressLines {
+			address = address + " " + strings.TrimSpace(str)
+		}
+		data.Address = address
+		output = append(output, data)
+	}
+
+	return output, nil
+}
+
+func (mc *AppleMapsClient) SearchByCategory(category string, lat float64, lon float64) (AppleMapsSearchResponse, error) {
 	u, err := url.Parse(mc.searchUrl)
 
 	if err != nil {
-		return
+		return AppleMapsSearchResponse{}, err
 	}
 
 	latStr := strconv.FormatFloat(lat, 'f', 8, 64)
 	lonStr := strconv.FormatFloat(lon, 'f', 8, 64)
 
-	lat1 := lat + 0.015
-	lon1 := lon + 0.015
-	lat2 := lat - 0.015
-	lon2 := lon - 0.015
+	lat1 := lat + 0.01
+	lon1 := lon + 0.01
+	lat2 := lat - 0.01
+	lon2 := lon - 0.01
 
 	lat1Str := strconv.FormatFloat(lat1, 'f', 8, 64)
 	lon1Str := strconv.FormatFloat(lon1, 'f', 8, 64)
@@ -148,8 +314,8 @@ func (mc *AppleMapsClient) Search(lat, lon float64) {
 	lon2Str := strconv.FormatFloat(lon2, 'f', 8, 64)
 
 	query := u.Query()
-	query.Set("q", "Cafe")
-	query.Set("includePoiCategories", "Bakery,Beach,Cafe,FoodMarket,Hiking,Landmark,Library,Museum,NationalMonument,Park,Restaurant,Store")
+	query.Set("q", category)
+	query.Set("includePoiCategories", category)
 	query.Set("userLocation", latStr+","+lonStr)
 	query.Set("resultTypeFilter", "Poi")
 	query.Set("searchRegionPriority", "required")
@@ -160,7 +326,7 @@ func (mc *AppleMapsClient) Search(lat, lon float64) {
 	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
 
 	if err != nil {
-		return
+		return AppleMapsSearchResponse{}, err
 	}
 
 	token := mc.Ams.GetAmToken()
@@ -173,34 +339,23 @@ func (mc *AppleMapsClient) Search(lat, lon float64) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return
+		return AppleMapsSearchResponse{}, err
 	}
 
 	if resp.StatusCode != 200 {
 		body, _ := io.ReadAll(resp.Body)
 		fmt.Println(string(body))
-		return
+		return AppleMapsSearchResponse{}, err
 	}
-	body, _ := io.ReadAll(resp.Body)
 
-	fmt.Println(string(body))
-}
+	var searchResults AppleMapsSearchResponse
 
-type IAppleMapsService interface {
-	GenerateMapsToken() string
-	GenerateToken() string
-	GetAmToken() string
-	GetToken() string
-	IsValidToken() bool
-}
+	if err := json.NewDecoder(resp.Body).Decode(&searchResults); err != nil {
+		return AppleMapsSearchResponse{}, err
+	}
 
-type AppleMapsService struct {
-	Token    string
-	AmToken  string
-	AmExpiry int64
-	Header   TokenHeader
-	Payload  TokenPayload
-	tokenUrl string
+	return searchResults, nil
+
 }
 
 func NewAppleMapsService() *AppleMapsService {
@@ -346,57 +501,4 @@ func loadPrivateKeyFromString(pemString string) (*ecdsa.PrivateKey, error) {
 	}
 
 	return ecdsaKey, nil
-}
-
-type TokenHeader struct {
-	Alg string `json:"alg"`
-	Kid string `json:"kid"`
-	Typ string `json:"typ"`
-}
-
-type TokenPayload struct {
-	Iss string `json:"iss"`
-	Iat int64  `json:"iat"`
-	Exp int64  `json:"exp"`
-}
-
-type AppleTokenResponse struct {
-	AccessToken      string `json:"accessToken"`
-	ExpiresInSeconds int    `json:"expiresInSeconds"`
-}
-
-type GeocodeResponse struct {
-	Results []GeocodeResult `json:"results"`
-}
-
-type GeocodeResult struct {
-	Coordinate            Coordinate        `json:"coordinate"`
-	DisplayMapRegion      MapRegion         `json:"displayMapRegion"`
-	Name                  string            `json:"name"`
-	FormattedAddressLines []string          `json:"formattedAddressLines"`
-	StructuredAddress     StructuredAddress `json:"structuredAddress"`
-	Country               string            `json:"country"`
-	CountryCode           string            `json:"countryCode"`
-}
-
-type Coordinate struct {
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-}
-
-type MapRegion struct {
-	SouthLatitude float64 `json:"southLatitude"`
-	WestLongitude float64 `json:"westLongitude"`
-	NorthLatitude float64 `json:"northLatitude"`
-	EastLongitude float64 `json:"eastLongitude"`
-}
-
-type StructuredAddress struct {
-	AdministrativeArea     string   `json:"administrativeArea"`
-	AdministrativeAreaCode string   `json:"administrativeAreaCode"`
-	Locality               string   `json:"locality"`
-	PostCode               string   `json:"postCode"`
-	Thoroughfare           string   `json:"thoroughfare"`
-	FullThoroughfare       string   `json:"fullThoroughfare"`
-	AreasOfInterest        []string `json:"areasOfInterest"`
 }
