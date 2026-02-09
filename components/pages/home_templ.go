@@ -38,7 +38,7 @@ func Home() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"vstack gap2\"><div class=\"vstack gap1 vpadl\"><div class=\"container-s\"><div class=\"vstack gap1 w50or100\"><h1>Discover How Walkable A Neighborhood Is</h1><p>Enter any address and instantly find out how many points of interest are within walking distance. From coffee shops to parks, libraries to restaurants—see what your neighborhood has to offer.</p><p>Walkability matters. It affects your quality of life, your health, and your community. Our tool makes it easy to assess just how pedestrian-friendly any location is by mapping out nearby points of interest within a convenient walking radius. Whether you're considering a move, exploring a new neighborhood, or simply curious about what's around you, get the data you need in seconds.</p></div></div></div><div class=\"bg3 vpadl\"><div class=\"container-s vstack gap1\"><div class=\"hstack justify-between\"><h2>See What's In Walking Distance</h2><div id=\"form-address-spinner\" class=\"htmx-indicator\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"vstack gap2\"><div class=\"bg3 vpad3 brad marg05\"><div class=\"container-s vstack gap1\"><div class=\"hstack justify-between\"><h2>See What's In Walking Distance</h2><div id=\"form-address-spinner\" class=\"htmx-indicator\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -54,7 +54,7 @@ func Home() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div></div><div><div class=\"vstack container-s vpadl gap1\"><h2>About</h2><div><h4>How walkability is calculated.</h4></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div><div class=\"container-s vstack gap1 vpadl\"><div class=\"vstack gap1 w50or100\"><h1>Discover How Walkable A Neighborhood Is</h1><p>Enter any address and instantly find out how many points of interest are within walking distance. From coffee shops to parks, libraries to restaurants—see what your neighborhood has to offer.</p><p>Walkability matters. It affects your quality of life, your health, and your community. Our tool makes it easy to assess just how pedestrian-friendly any location is by mapping out nearby points of interest within a convenient walking radius. Whether you're considering a move, exploring a new neighborhood, or simply curious about what's around you, get the data you need in seconds.</p></div></div></div><div><div class=\"vstack container-s vpadl gap1\"><h2>About</h2><div><h4>How walkability is calculated.</h4></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

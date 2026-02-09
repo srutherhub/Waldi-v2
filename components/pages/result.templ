@@ -17,22 +17,24 @@ Locations []services.PointOfInterest
 templ Result(props ResultProps) {
 <div>
   @components.Navbar()
-  <div class="container-s vpadl bg2">
-    <div class="vstack gap2 pad1">
-      <div class="vstack gap05">
-        <h2>Map</h2>
-        @components.Map(props.ApiKey, props.Lat, props.Lon)
+  <div class="vpad3">
+    <div class="container-s bg2 brad">
+      <div class="vstack gap2 pad1">
+        <div class="vstack gap05">
+          <h2>Map</h2>
+          @components.Map(props.ApiKey, props.Lat, props.Lon)
 
-        <aside>Results based on: { props.Address }</aside>
-      </div>
-      @EmbeddedMapModal()
-      <div class="vstack gap05">
-        <h2>Places</h2>
-        <div class="vstack gap1 b brad pad05">
-          @LocationsByCategory(services.PlaceCategoryCafe,"Cafes",getLocationsByCat(services.PlaceCategoryCafe,props.Locations))
-          @LocationsByCategory(services.PlaceCategoryRestaurant,"Restaurants",getLocationsByCat(services.PlaceCategoryRestaurant,props.Locations))
-          @LocationsByCategory(services.PlaceCategoryPark,"Parks",getLocationsByCat(services.PlaceCategoryPark,props.Locations))
-          @LocationsByCategory(services.PlaceCategoryGrocery,"Groceries and Stores",getLocationsByCat(services.PlaceCategoryGrocery,props.Locations))
+          <aside>Results based on: { props.Address }</aside>
+        </div>
+        @EmbeddedMapModal()
+        <div class="vstack gap05">
+          <h2>Places</h2>
+          <div class="vstack gap1 b brad pad05">
+            @LocationsByCategory(services.PlaceCategoryCafe,"Cafes",getLocationsByCat(services.PlaceCategoryCafe,props.Locations))
+            @LocationsByCategory(services.PlaceCategoryRestaurant,"Restaurants",getLocationsByCat(services.PlaceCategoryRestaurant,props.Locations))
+            @LocationsByCategory(services.PlaceCategoryPark,"Parks",getLocationsByCat(services.PlaceCategoryPark,props.Locations))
+            @LocationsByCategory(services.PlaceCategoryGrocery,"Groceries and Stores",getLocationsByCat(services.PlaceCategoryGrocery,props.Locations))
+          </div>
         </div>
       </div>
     </div>
@@ -70,6 +72,7 @@ templ LocationsByCategory(val services.PlaceCategory, name string,locations []se
     <div>@i.IconArrowRight()</div>
   </div>
   }
+
 </div>
 }
 

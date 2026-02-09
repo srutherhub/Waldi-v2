@@ -1,3 +1,18 @@
+function deleteLoadStates() {
+  document.addEventListener("htmx:afterOnLoad", (event) => {
+    const indicators = document.querySelectorAll(".htmx-request");
+    indicators.forEach((el) => el.classList.remove("htmx-request"));
+  });
+
+  window.onpopstate = function () {
+    const indicators = document.querySelectorAll(".htmx-indicator");
+    indicators.forEach((el) => {
+      el.style.opacity = "0";
+      el.style.visibility = "hidden";
+    });
+  };
+}
+
 function getBrowserLocation() {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
@@ -79,7 +94,7 @@ async function openPlaceDetails(event) {
       target: "#map-modal-content",
       swap: "innerHTML",
     });
-    console.log("Hello from modal")
+    console.log("Hello from modal");
     dialog.showModal();
   } catch (error) {
     console.error("Error:", error);

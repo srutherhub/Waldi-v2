@@ -81,6 +81,10 @@
   gap: 2rem;
 }
 
+.pad025 {
+  padding: 0.25rem;
+}
+
 .pad05 {
   padding: 0.5rem;
 }
@@ -89,17 +93,20 @@
   padding: 1rem;
 }
 
+.vpad025 {
+  padding:0.25rem 0 0.25rem 0;
+}
 
-.pad025 {
-  padding: 0.25rem;
+.vpad3 {
+  padding: 3rem 0 3rem 0;
+}
+
+.marg05 {
+  margin:0.5rem;
 }
 
 .front {
   z-index: 1;
-}
-
-.vpadl {
-  padding: 4rem 0 4rem 0;
 }
 
 @media (max-width: 30rem) {

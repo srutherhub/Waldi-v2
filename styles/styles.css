@@ -27,7 +27,7 @@
   background-color: var(--darkblue);
   border-radius: 4px;
   border: 1px var(--blue) solid;
-  height: calc(2rem + 2px);
+  height: calc(2rem);
   font-size: 1rem;
   color: var(--white2);
   transition: border 0.05s ease-in-out;
@@ -45,7 +45,7 @@
 
 .button2 {
   background-color: var(--white2);
-  height: calc(2rem + 2px);
+  height: calc(2rem);
   border: 1px var(--blue) solid;
   border-radius: 4px;
   font-size: 1rem;
